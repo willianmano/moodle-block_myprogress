@@ -6,7 +6,7 @@ It is also possible to enable/disable the course, group, and cohort progression 
 
 ## Sponsor special thanks
 
-This plugin was kindly sponsored by [e-Learning, Conseils & Solutions](http://www.luiggisansonetti.fr/conseils).
+This plugin was kindly sponsored by **Luiggi Sansonetti** from [e-Learning, Conseils & Solutions](http://www.luiggisansonetti.fr/conseils).
 
 Thank you very much for supporting Moodle community and the open-source initiative.
 
