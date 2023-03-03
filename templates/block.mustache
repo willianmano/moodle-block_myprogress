@@ -1,8 +1,9 @@
-<p class="mb-0">{{#str}}myprogress, block_myprogress{{/str}}: {{userprogress}}%</p>
-
-<div class="progress mb-4">
-    <div class="progress-bar bg-success" role="progressbar" style="width: {{userprogress}}%" aria-valuenow="{{userprogress}}" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
+{{#hasuserprogress}}
+    <p class="mb-0">{{#str}}myprogress, block_myprogress{{/str}}: {{userprogress}}%</p>
+    <div class="progress mb-4">
+        <div class="progress-bar bg-success" role="progressbar" style="width: {{userprogress}}%" aria-valuenow="{{userprogress}}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+{{/hasuserprogress}}
 
 {{#hasclassaverage}}
     <p class="mb-0">{{#str}}classaverage, block_myprogress{{/str}}: {{classaverage}}%</p>

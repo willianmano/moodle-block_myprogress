@@ -31,6 +31,7 @@ use renderer_base;
  */
 class block implements renderable, templatable {
     protected $course;
+    protected $context;
     protected $config;
 
     /**
@@ -38,8 +39,9 @@ class block implements renderable, templatable {
      *
      * @param $course
      */
-    public function __construct($course, $config) {
+    public function __construct($course, $context, $config) {
         $this->course = $course;
+        $this->context = $context;
         $this->config = $config;
     }
 
@@ -57,12 +59,20 @@ class block implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $progressutil = new progress();
 
-        $data['userprogress'] = $progressutil->get_user_progress($this->course->id);
+        $data = [];
 
         if (is_null($this->config) || $this->config->showclassaverage) {
             $data['classaverage'] = $progressutil->get_class_average($this->course->id);
             $data['hasclassaverage'] = !empty($data['classaverage']);
         }
+
+        // Teachers can only view class average.
+        if (!has_capability('moodle/course:isincompletionreports', $this->context) || is_siteadmin()) {
+            return $data;
+        }
+
+        $data['userprogress'] = $progressutil->get_user_progress($this->course->id);
+        $data['hasuserprogress'] = !empty($data['userprogress']);
 
         if (is_null($this->config) || $this->config->showgroupaverage) {
             $data['groupsaverage'] = $progressutil->get_groups_average($this->course->id);

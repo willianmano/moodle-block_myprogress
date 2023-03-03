@@ -79,7 +79,7 @@ class block_myprogress extends block_base {
 
         $renderer = $this->page->get_renderer('block_myprogress');
 
-        $contentrenderable = new \block_myprogress\output\block($this->page->course, $this->config);
+        $contentrenderable = new \block_myprogress\output\block($this->page->course, $this->context, $this->config);
         $this->content->text = $renderer->render($contentrenderable);
 
         return $this->content;
