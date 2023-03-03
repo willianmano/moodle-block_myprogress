@@ -14,25 +14,38 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_myprogress\util;
+
 /**
- * My Progress block english language translation
+ * Cohort utility class
  *
  * @package    block_myprogress
  * @copyright  2023 e-Learning – Conseils & Solutions <http://www.luiggisansonetti.fr/conseils>
  * @author     Willian Mano <willianmanoaraujo@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class cohort {
+    /**
+     * Get all site cohorts
+     *
+     * @return array|false
+     *
+     * @throws \dml_exception
+     */
+    public function get_all() {
+        global $DB;
 
-$string['pluginname'] = 'My Progress';
-$string['myprogress:addinstance'] = 'Add a new my progress block';
-$string['blocktitle'] = 'Block Title';
+        $cohorts = $DB->get_records('cohort', ['visible' => 1]);
 
-$string['myprogress'] = 'My progress';
-$string['classaverage'] = 'Class average';
-$string['groupaverage'] = 'Group average';
-$string['cohortaverage'] = 'Cohort average';
+        if (!$cohorts) {
+            return false;
+        }
 
-$string['showclassaverage'] = 'Show class average';
-$string['showgroupaverage'] = 'Show group average';
-$string['showcohortaverage'] = 'Show cohort average';
-$string['cohortselection'] = 'Cohorts to show progress';
+        $data = [];
+        foreach ($cohorts as $cohort) {
+            $data[$cohort->id] = $cohort->name;
+        }
+
+        return $data;
+    }
+}

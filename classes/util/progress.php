@@ -124,11 +124,11 @@ class progress {
      * @param $courseid
      * @param $userid
      *
-     * @return array|false
+     * @return array
      *
      * @throws \dml_exception
      */
-    public function get_cohorts_average($courseid, $userid = null) {
+    public function get_cohorts_average($courseid, $userid = null, $cohortstoshow = null) {
         global $USER, $DB;
 
         if (!$userid) {
@@ -143,7 +143,17 @@ class progress {
         $usercohorts = $DB->get_records_sql($sql, ['userid' => $userid]);
 
         if (!$usercohorts) {
-            return false;
+            return [];
+        }
+
+        if (!is_null($cohortstoshow)) {
+            $usercohorts = array_filter($usercohorts, function($cohort) use ($cohortstoshow) {
+                return in_array($cohort->id, $cohortstoshow);
+            });
+        }
+
+        if (empty($usercohorts)) {
+            return [];
         }
 
         $cohorts = [];

@@ -80,7 +80,7 @@ class block implements renderable, templatable {
         }
 
         if (is_null($this->config) || $this->config->showcohortaverage) {
-            $data['cohortsaverage'] = $progressutil->get_cohorts_average($this->course->id);
+            $data['cohortsaverage'] = $progressutil->get_cohorts_average($this->course->id, null, $this->config->cohorts);
             $data['hascohortsaverage'] = !empty($data['cohortsaverage']);
         }
 

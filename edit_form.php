@@ -58,5 +58,16 @@ class block_myprogress_edit_form extends block_edit_form {
         $mform->addElement('select', 'config_showcohortaverage', get_string('showcohortaverage', 'block_myprogress'), $options);
         $mform->setDefault('config_showcohortaverage', 1);
         $mform->setType('config_showcohortaverage', PARAM_INT);
+
+        $cohortsutil = new \block_myprogress\util\cohort();
+        $cohorts = $cohortsutil->get_all();
+
+        $mform->addElement('select', 'config_cohorts', get_string('cohortselection', 'block_myprogress'), $cohorts);
+        $mform->getElement('config_cohorts')->setMultiple(true);
+        $mform->hideIf('config_cohorts', 'config_showcohortaverage', 0);
+
+        if ($cohorts) {
+            $mform->getElement('config_cohorts')->setSelected(array_keys($cohorts));
+        }
     }
 }
