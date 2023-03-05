@@ -5,13 +5,6 @@
     </div>
 {{/hasuserprogress}}
 
-{{#hasclassaverage}}
-    <p class="mb-0">{{#str}}classaverage, block_myprogress{{/str}}: {{classaverage}}%</p>
-    <div class="progress mb-4">
-        <div class="progress-bar bg-success" role="progressbar" style="width: {{classaverage}}%" aria-valuenow="{{classaverage}}" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-{{/hasclassaverage}}
-
 {{#hasgroupsaverage}}
     <div class="mb-4">
         <p class="mb-0">{{#str}}groupaverage, block_myprogress{{/str}}</p>
@@ -35,3 +28,10 @@
         {{/cohortsaverage}}
     </div>
 {{/hascohortsaverage}}
+
+{{#hasclassaverage}}
+    <p class="mb-0">{{#str}}classaverage, block_myprogress{{/str}}: {{classaverage}}%</p>
+    <div class="progress mb-4">
+        <div class="progress-bar bg-success" role="progressbar" style="width: {{classaverage}}%" aria-valuenow="{{classaverage}}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+{{/hasclassaverage}}
