@@ -19,7 +19,7 @@
  *
  * @package    block_myprogress
  * @copyright  2023 e-Learning – Conseils & Solutions <http://www.luiggisansonetti.fr/conseils>
- * @author     Willian Mano <willianmanoaraujo@gmail.com>
+ * @author     Luiggi Sansonetti <conseils@luiggisansonetti.fr>, Willian Mano <willianmanoaraujo@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
