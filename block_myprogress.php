@@ -56,7 +56,7 @@ class block_myprogress extends block_base {
             'course-view' => true,
             'site' => false,
             'mod' => false,
-            'my' => false
+            'my' => false,
         );
     }
 
