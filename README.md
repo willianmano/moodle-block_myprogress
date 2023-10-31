@@ -1,6 +1,6 @@
 # Moodle My Progress Block #
 
-This block show the user completion progress in a course.
+This block displays the user completion progress in a course.
 
 It is also possible to enable/disable the course, group, and cohort progression average. So, students can compare their performance with the others.
 
