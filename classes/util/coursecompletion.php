@@ -62,13 +62,13 @@ class coursecompletion {
     public function insert_or_update_user_course_progress($userid, $progress) {
         global $DB;
 
-        $courseprogress = $DB->get_record('block_myprogress_course_progress', ['courseid' => $this->course->id, 'userid' => $userid]);
+        $courseprogress = $DB->get_record('block_myprogress_course', ['courseid' => $this->course->id, 'userid' => $userid]);
 
         if ($courseprogress) {
             $courseprogress->progress = $progress;
             $courseprogress->timemodified = time();
 
-            return $DB->update_record('block_myprogress_course_progress', $courseprogress);
+            return $DB->update_record('block_myprogress_course', $courseprogress);
         }
 
         $courseprogress = new \stdClass();
@@ -78,7 +78,7 @@ class coursecompletion {
         $courseprogress->timecreated = time();
         $courseprogress->timemodified = time();
 
-        return $DB->insert_record('block_myprogress_course_progress', $courseprogress);
+        return $DB->insert_record('block_myprogress_course', $courseprogress);
     }
 
     /**
