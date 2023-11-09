@@ -123,6 +123,6 @@ class block_myprogress extends block_base {
     public function instance_delete() {
         global $DB;
 
-        return $DB->delete_records('block_myprogress_course_progress', ['courseid' => $this->page->course->id]);
+        return $DB->delete_records('block_myprogress_course', ['courseid' => $this->page->course->id]);
     }
 }

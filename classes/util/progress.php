@@ -42,7 +42,7 @@ class progress {
             $userid = $USER->id;
         }
 
-        $record = $DB->get_record('block_myprogress_course_progress', ['courseid' => $courseid, 'userid' => $userid]);
+        $record = $DB->get_record('block_myprogress_course', ['courseid' => $courseid, 'userid' => $userid]);
 
         if (!$record) {
             return 0;
@@ -64,7 +64,7 @@ class progress {
         global $DB;
 
         $sql = 'SELECT AVG(progress) as average
-                FROM {block_myprogress_course_progress}
+                FROM {block_myprogress_course}
                 WHERE courseid = :courseid';
 
         $record = $DB->get_record_sql($sql, ['courseid' => $courseid]);
@@ -104,7 +104,7 @@ class progress {
             $sql = 'SELECT g.id, g.name, AVG(cp.progress) as average
                     FROM {groups} g
                     INNER JOIN {groups_members} gm ON gm.groupid = g.id
-                    LEFT JOIN {block_myprogress_course_progress} cp ON cp.userid = gm.userid AND cp.courseid = :courseid
+                    LEFT JOIN {block_myprogress_course} cp ON cp.userid = gm.userid AND cp.courseid = :courseid
                     WHERE g.id = :groupid';
 
             $record = $DB->get_record_sql($sql, ['courseid' => $courseid, 'groupid' => $usergroup]);
@@ -161,7 +161,7 @@ class progress {
             $sql = 'SELECT c.id, c.name, AVG(cp.progress) as average
                     FROM {cohort} c
                     INNER JOIN {cohort_members} cm ON c.id = cm.cohortid
-                    LEFT JOIN {block_myprogress_course_progress} cp ON cp.userid = cm.userid AND cp.courseid = :courseid
+                    LEFT JOIN {block_myprogress_course} cp ON cp.userid = cm.userid AND cp.courseid = :courseid
                     WHERE c.id = :cohortid';
 
             $record = $DB->get_record_sql($sql, ['cohortid' => $usercohort->id, 'courseid' => $courseid]);
