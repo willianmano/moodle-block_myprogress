@@ -1,5 +1,5 @@
 <?php
-// This file is part of My Progress block for Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * My Progress block english language translation
+ * Privacy subsystem for My Progress block
  *
  * @package    block_myprogress
  * @copyright  2023 e-Learning – Conseils & Solutions <http://www.luiggisansonetti.fr/conseils>
@@ -23,18 +23,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'My Progress';
-$string['myprogress:addinstance'] = 'Add a new my progress block';
-$string['blocktitle'] = 'Block Title';
 
-$string['myprogress'] = 'My progress';
-$string['classaverage'] = 'Class average';
-$string['groupaverage'] = 'Group average';
-$string['cohortaverage'] = 'Cohort average';
+namespace block_myprogress\privacy;
 
-$string['showclassaverage'] = 'Show class average';
-$string['showgroupaverage'] = 'Show group average';
-$string['showcohortaverage'] = 'Show cohort average';
-$string['cohortselection'] = 'Cohorts to show progress';
+class provider implements
+    // This plugin does not store any personal user data.
+    \core_privacy\local\metadata\null_provider {
 
-$string['privacy:metadata'] = 'The plugin only shows student\'s progress in the course and stores no other personal data';
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason(): string {
+        return 'privacy:metadata';
+    }
+}
