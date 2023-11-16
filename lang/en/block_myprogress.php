@@ -36,3 +36,5 @@ $string['showclassaverage'] = 'Show class average';
 $string['showgroupaverage'] = 'Show group average';
 $string['showcohortaverage'] = 'Show cohort average';
 $string['cohortselection'] = 'Cohorts to show progress';
+
+$string['privacy:metadata'] = 'The plugin stores no personal data.';
