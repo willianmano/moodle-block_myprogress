@@ -37,4 +37,6 @@ $string['showgroupaverage'] = 'Afficher la moyenne du groupe';
 $string['showcohortaverage'] = 'Afficher la moyenne de la promo';
 $string['cohortselection'] = 'Cohortes à afficher';
 
-$string['privacy:metadata'] = 'Le plugin affiche uniquement la progression de l\'étudiant dans le cours, et ne conserve aucune autre donnée personnelle';
+$string['privacy:metadata:block_myprogress:userid'] = 'Le plugin enregistre l\'identifiant de l\'étudiant dans le cours';
+$string['privacy:metadata:block_myprogress::courseid'] = 'Le plugin enregistre l\'identifiant du cours';
+$string['privacy:metadata:block_myprogress:progress'] = 'Le plugin enregistre la progression de l\'étudiant';
