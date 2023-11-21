@@ -37,4 +37,7 @@ $string['showgroupaverage'] = 'Show group average';
 $string['showcohortaverage'] = 'Show cohort average';
 $string['cohortselection'] = 'Cohorts to show progress';
 
-$string['privacy:metadata'] = 'The plugin only shows student\'s progress in the course and stores no other personal data';
+$string['privacy:metadata'] = 'This plugin shows student\'s progress in the course';
+$string['privacy:metadata:block_myprogress:userid'] = 'The plugin records student id in course';
+$string['privacy:metadata:block_myprogress:courseid'] = 'The plugin records course id';
+$string['privacy:metadata:block_myprogress:progress'] = 'The plugin records student progress';
