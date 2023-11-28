@@ -31,19 +31,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: '7.3'
-            moodle-branch: 'MOODLE_311_STABLE'
-            database: pgsql
-            extensions:
-            civersion: 3
-          - php: '7.4'
-            moodle-branch: 'MOODLE_400_STABLE'
-            database: pgsql
-            extensions: xmlrpc-beta
-          - php: '8.0'
-            moodle-branch: 'MOODLE_400_STABLE'
-            database: mariadb
-            extensions: xmlrpc-beta
           - php: '7.4'
             moodle-branch: 'MOODLE_401_STABLE'
             database: pgsql
