@@ -55,14 +55,14 @@ class block_myprogress_edit_form extends block_edit_form {
         $mform->setDefault('config_showgroupaverage', 1);
         $mform->setType('config_showgroupaverage', PARAM_INT);
 
-        $mform->addElement('autocomplete', 'config_showcohortaverage', get_string('showcohortaverage', 'block_myprogress'), $options);
+        $mform->addElement('select', 'config_showcohortaverage', get_string('showcohortaverage', 'block_myprogress'), $options);
         $mform->setDefault('config_showcohortaverage', 1);
         $mform->setType('config_showcohortaverage', PARAM_INT);
 
         $cohortsutil = new \block_myprogress\util\cohort();
         $cohorts = $cohortsutil->get_all();
 
-        $mform->addElement('select', 'config_cohorts', get_string('cohortselection', 'block_myprogress'), $cohorts);
+        $mform->addElement('autocomplete', 'config_cohorts', get_string('cohortselection', 'block_myprogress'), $cohorts);
         $mform->getElement('config_cohorts')->setMultiple(true);
         $mform->hideIf('config_cohorts', 'config_showcohortaverage', 0);
 
