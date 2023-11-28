@@ -55,7 +55,7 @@ class block_myprogress_edit_form extends block_edit_form {
         $mform->setDefault('config_showgroupaverage', 1);
         $mform->setType('config_showgroupaverage', PARAM_INT);
 
-        $mform->addElement('select', 'config_showcohortaverage', get_string('showcohortaverage', 'block_myprogress'), $options);
+        $mform->addElement('autocomplete', 'config_showcohortaverage', get_string('showcohortaverage', 'block_myprogress'), $options);
         $mform->setDefault('config_showcohortaverage', 1);
         $mform->setType('config_showcohortaverage', PARAM_INT);
 
