@@ -24,6 +24,8 @@
 
 namespace block_myprogress\privacy;
 
+defined('MOODLE_INTERNAL') || die();
+
 use context_block;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\{approved_contextlist, approved_userlist, contextlist, userlist};
@@ -56,53 +58,92 @@ class provider implements
         return $collection;
     }
 
-    /**
-     * Get the list of users who have data within a context.
-     *
-     * @param userlist $userlist The userlist containing the list of users who have data in this context/plugin combination.
-     */
-    public static function get_users_in_context(userlist $userlist) {
-        $context = $userlist->get_context();
-        if (!$context instanceof context_block) {
-            return;
-        }
-        $sql = "SELECT DISTINCT(userid) FROM {block_myprogress_course}";
-        $userlist->add_from_sql('userid', $sql, []);
-    }
-
-    /**
-     * Delete users' myprogress items.
-     *
-     * @param approved_userlist $userlist
-     * @return void
-     */
-    public static function delete_data_for_users(approved_userlist $userlist) {
-        global $DB;
-        $userids = $userlist->get_userids();
-        list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
-        $DB->delete_records_select('block_myprogress', "userid $insql", $inparams);
-    }
-
-    /**
+   /**
      * Get the list of contexts that contain user information for the specified user.
      *
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
-        return (new contextlist)->add_from_sql(
-            "SELECT cx.id
-            FROM {block_myprogress_course} bd
-            JOIN {context} cx ON cx.contextlevel = :blocklevel AND cx.instanceid = bd.id
-            WHERE bd.userid = :userid",
-            [
-                'blocklevel' => CONTEXT_BLOCK,
-                'userid' => $userid,
-				'progress'	=> $progress,	
-            ]
-        );
+        $sql = 'SELECT DISTINCT ctx.id
+        FROM {block_myprogress_course} bmc
+        JOIN {context} ctx
+            ON ctx.instanceid = bmc.userid
+            AND ctx.contextlevel = :contextlevel
+        WHERE bmc.userid = :userid';
+
+        $params = ['userid' => $userid, 'contextlevel' => CONTEXT_USER];
+
+        $contextlist = new contextlist();
+        $contextlist->add_from_sql($sql, $params);
+        return $contextlist;
     }
 
+    /**
+     * Get the list of users who have data within a context.
+     *
+     * @param   userlist $userlist The userlist containing the list of users who have data in this context/plugin combination.
+     */
+    public static function get_users_in_context(userlist $userlist) {
+        $context = $userlist->get_context();
+
+        if (!$context instanceof \context_user) {
+            return;
+        }
+
+        $params = [
+            'contextid' => $context->id,
+            'contextuser' => CONTEXT_BLOCK,
+        ];
+
+        $sql = "SELECT bmc.userid as userid
+                  FROM {block_myprogress_course} bmc
+                  JOIN {context} ctx
+                       ON ctx.instanceid = bmc.userid
+                       AND ctx.contextlevel = :contextuser
+                 WHERE ctx.id = :contextid";
+
+        $userlist->add_from_sql('userid', $sql, $params);
+    }
+
+   /**
+     * Get records related to this plugin and user.
+     *
+     * @param  int $userid The user ID
+     * @return array An array of records.
+     * @throws \dml_exception
+     */
+    protected static function get_records($userid) {
+        global $DB;
+
+        return $DB->get_records('block_myprogress_course', ['userid' => $userid]);
+    }
+
+
+    /**
+     * Export all user data for the specified user, in the specified contexts, using the supplied exporter instance.
+     *
+     * @param approved_contextlist $contextlist The approved contexts to export information for.
+     */
+    public static function export_user_data(approved_contextlist $contextlist) {
+        $myprogressdata = [];
+        $results = static::get_records($contextlist->get_user()->id);
+        foreach ($results as $result) {
+            $myprogressdata[] = (object) [
+                'courseid' => $result->courseid,
+                'progress' => $result->progress,
+            ];
+        }
+        if (!empty($myprogressdata)) {
+            $data = (object) [
+                'progress' => $myprogressdata,
+            ];
+            \core_privacy\local\request\writer::with_context($contextlist->current())->export_data([
+                get_string('pluginname', 'block_myprogress')], $data);
+        }
+    }
+
+	
     /**
      * Delete all personal data for all users in the specified context.
      *
@@ -110,8 +151,8 @@ class provider implements
      */
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
-        if ($context instanceof \context_course) {
-            $DB->delete_records('block_myprogress_course', ['courseid' => $context->instanceid]);
+        if ($context instanceof \context_user) {
+            static::delete_data($context->instanceid);
         }
     }
 
@@ -121,52 +162,32 @@ class provider implements
      * @param approved_contextlist $contextlist The approved contextlist to delete information for.
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
-        global $DB;
-        $userid = $contextlist->get_user()->id;
-        foreach ($contextlist as $context) {
-            if ($context instanceof \context_user) {
-                $DB->delete_records('block_myprogress_course', ['userid' => $userid]);
-            } else if ($context instanceof \context_course) {
-                $DB->delete_records('block_dedication_course', ['userid' => $userid, 'courseid' => $context->instanceid]);
-            }
-        }
+       static::delete_data($contextlist->get_user()->id);
     }
 
-    /**
-     * Export all user data for the specified user, in the specified contexts, using the supplied exporter instance.
+   /**
+     * Delete data related to a userid.
      *
-     * @param approved_contextlist $contextlist The approved contexts to export information for.
+     * @param  int $userid The user ID
+     * @throws \dml_exception
      */
-    public static function export_user_data(approved_contextlist $contextlist) {
+    protected static function delete_data($userid) {
         global $DB;
-        $data = [];
 
-        $userid = (int) $contextlist->get_user()->id;
-        $results = $DB->get_records('block_myprogress_course', array('userid' => $userid));
-        foreach ($results as $result) {
-            $data[] = (object) [
-                'courseid' => $result->courseid,
-            ];
-        }
-        if (!empty($data)) {
-            $data = (object) [
-                'block_myprogress' => $data,
-            ];
-            \core_privacy\local\request\writer::with_context($contextlist->current())->export_data(
-                [get_string('pluginname', 'block_myprogress')],
-                $data
-            );
-        }
+        $DB->delete_records('block_myprogress_course', ['userid' => $userid]);
     }
 
-    /**
-     * Get the block instance record for the specified context.
+   /**
+     * Delete multiple users within a single context.
      *
-     * @param   context_block $context The context to fetch
-     * @return  stdClass
+     * @param   approved_userlist $userlist The approved context and user information to delete information for.
+     * @throws \dml_exception
      */
-    protected static function get_instance_from_context(context_block $context) {
-        global $DB;
-        return $DB->get_record('block_instances', ['id' => $context->instanceid, 'blockname' => 'my progress']);
+    public static function delete_data_for_users(approved_userlist $userlist) {
+        $context = $userlist->get_context();
+
+        if ($context instanceof \context_user) {
+            static::delete_data($context->instanceid);
+        }
     }
 }
